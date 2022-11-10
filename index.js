@@ -27,14 +27,14 @@ async function run() {
             const services = await cursor.toArray();
             res.send(services);
         })
-        // for taking one service data from db
+ // for taking one service data from db
         app.get('/services/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
             const services = await serviceCollection.findOne(query);
             res.send(services);
         })
-        // review api
+ // review api
         app.get('/reviews', async (req, res) => {
             let query = {};
             if (req.query.email) {
@@ -47,12 +47,13 @@ async function run() {
             res.send(reviews);
         })
 
-
+// insert one
         app.post('/reviews', async (req, res) => {
             const review = req.body;
             const result = await reviewerCollection.insertOne(review);
             res.send(result);
         })
+// update one        
         app.patch('/reviews/:id', async (req, res) => {
             const id = req.params.id;
             const status = req.body.status
@@ -65,19 +66,36 @@ async function run() {
             const result = await reviewerCollection.updateOne(query, updatedDoc);
             res.send(result);
         })
+// delete part
         app.delete('/reviews/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
             const result = await reviewerCollection.deleteOne(query);
             res.send(result);
         })
-
+// Add new service
         app.post('/services', async (req, res) => {
             const user = req.body;
             console.log(user);
             const result = await serviceCollection.insertOne(user)
             res.send(result);
         });
+// for update data
+        app.put('/users/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const user = req.body;
+            const option = {upsert: true};
+            const updatedUser = {
+                $set: {
+                    name: user.name,
+                    address: user.address,
+                    email: user.email
+                }
+            }
+            const result = await userCollection.updateOne(filter, updatedUser, option);
+            res.send(result);
+        })
 
 
     } finally {
