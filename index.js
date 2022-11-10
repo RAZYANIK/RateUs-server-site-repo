@@ -81,19 +81,20 @@ async function run() {
             res.send(result);
         });
 // for update data
-        app.put('/users/:id', async (req, res) => {
+        app.put('/reviews/:id', async (req, res) => {
             const id = req.params.id;
             const filter = { _id: ObjectId(id) };
             const user = req.body;
             const option = {upsert: true};
             const updatedUser = {
                 $set: {
-                    name: user.name,
-                    address: user.address,
-                    email: user.email
+                    reviewer_name: user.name,
+                    Service_rating: user.rating,
+                    email: user.email,
+                    review:user.review
                 }
             }
-            const result = await userCollection.updateOne(filter, updatedUser, option);
+            const result = await reviewerCollection.updateOne(filter, updatedUser, option);
             res.send(result);
         })
 
